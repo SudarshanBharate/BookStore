@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/AppContext";
 import { formatINR } from "../utils/format";
@@ -14,6 +14,7 @@ import Button from "./Button";
 export default function BookCard({ book, view = "grid" }) {
   const { addToCart } = useCart();
   const cardRef = useRef(null);
+  const [cartAnim, setCartAnim] = useState(false); // drives add-to-cart burst
 
   const discount =
     book.originalPrice > book.price
@@ -36,6 +37,13 @@ export default function BookCard({ book, view = "grid" }) {
       el.style.setProperty("--my", "50%");
     }
   }, []);
+
+  function handleAddToCart(e) {
+    e.preventDefault();
+    addToCart(book);
+    setCartAnim(true);
+    setTimeout(() => setCartAnim(false), 1400);
+  }
 
   if (view === "list") {
     return (
@@ -71,7 +79,7 @@ export default function BookCard({ book, view = "grid" }) {
           </div>
           <div className="mt-3 flex items-center justify-between">
             <PriceBlock book={book} discount={discount} />
-            <AddToCartBtn book={book} addToCart={addToCart} />
+            <AddToCartBtn book={book} addToCart={addToCart} cartAnim={cartAnim} onAdd={handleAddToCart} />
           </div>
         </div>
       </div>
@@ -105,7 +113,7 @@ export default function BookCard({ book, view = "grid" }) {
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-4 bg-gray-50/80 dark:bg-gray-800/60 border-t border-gray-100 dark:border-gray-700/50">
+      <div className="flex flex-1 flex-col p-4 bg-gray-100/90 dark:bg-gray-800/80 border-t border-gray-200 dark:border-gray-700">
         <span className="badge bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 self-start">
           {book.category}
         </span>
@@ -120,7 +128,7 @@ export default function BookCard({ book, view = "grid" }) {
 
         <div className="mt-3 flex items-center justify-between">
           <PriceBlock book={book} discount={discount} />
-          <AddToCartBtn book={book} addToCart={addToCart} />
+          <AddToCartBtn book={book} addToCart={addToCart} cartAnim={cartAnim} onAdd={handleAddToCart} />
         </div>
       </div>
     </div>
@@ -160,17 +168,62 @@ function PriceBlock({ book, discount }) {
   );
 }
 
-function AddToCartBtn({ book, addToCart }) {
+function AddToCartBtn({ book, cartAnim, onAdd }) {
+  if (!book.inStock) {
+    return (
+      <Button size="sm" disabled variant="secondary">
+        Sold Out
+      </Button>
+    );
+  }
+
   return (
-    <Button
-      size="sm"
-      disabled={!book.inStock}
-      onClick={(e) => {
-        e.preventDefault();
-        addToCart(book);
-      }}
-    >
-      {book.inStock ? "Add" : "Sold Out"}
-    </Button>
+    <div className="relative">
+      {/* Burst rings — appear on add */}
+      {cartAnim && (
+        <>
+          <span className="absolute inset-0 rounded-xl animate-ping-once bg-primary-400/30 pointer-events-none" />
+          <span className="absolute inset-0 rounded-xl animate-ping-once-delay bg-primary-300/20 pointer-events-none" />
+        </>
+      )}
+
+      <Button
+        size="sm"
+        onClick={onAdd}
+        className={`relative transition-all duration-300 ${
+          cartAnim
+            ? "!bg-green-500 !border-green-400 scale-105 shadow-[0_0_12px_rgba(34,197,94,0.5)]"
+            : ""
+        }`}
+      >
+        {cartAnim ? (
+          <span className="flex items-center gap-1">
+            <CheckIcon />
+            Added!
+          </span>
+        ) : (
+          <span className="flex items-center gap-1">
+            <CartPlusIcon />
+            Add
+          </span>
+        )}
+      </Button>
+    </div>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+    </svg>
+  );
+}
+
+function CartPlusIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
   );
 }

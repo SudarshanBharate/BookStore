@@ -202,46 +202,87 @@
     @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
   }
 
-  /* ── Dynamic Island Navbar ──────────────────────────────────────────── */
+  /* ── Dynamic Island Navbar ──────────────────────────────────────────────
+     Layered glass effect:
+     • Multi-stop backdrop-filter with saturation boost for colour vibrancy
+     • 3-layer box-shadow: outer ambient, sharp edge, inner specular
+     • Specular highlight stripe at top (inset) mimics convex glass surface
+     • Colour-tinted shadow that responds to the island's indigo accent
+     • Scale + shadow transition on hover for a "lifted" physical feel
+     • Active (mousedown) inset for tactile depth
+  ─────────────────────────────────────────────────────────────────────── */
   .island {
-    /* frosted glass pill */
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.68);
+    backdrop-filter: saturate(200%) blur(24px) brightness(1.04);
+    -webkit-backdrop-filter: saturate(200%) blur(24px) brightness(1.04);
+    border: 1px solid rgba(255, 255, 255, 0.55);
     box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.10),
-      0 1px 2px rgba(0, 0, 0, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      /* ambient outer glow */
+      0 8px 32px rgba(99, 102, 241, 0.10),
+      /* tight drop shadow */
+      0 2px 6px rgba(0, 0, 0, 0.08),
+      /* sharp bottom edge */
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      /* specular top-edge highlight — convex glass effect */
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.85),
+      /* inner bottom rim — gives thickness */
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04);
     transition:
-      width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
       border-radius 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
-      box-shadow 0.3s ease,
-      transform 0.3s ease;
+      box-shadow 0.25s ease,
+      transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.2s ease;
   }
 
   .dark .island {
-    background: rgba(17, 24, 39, 0.80);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(15, 20, 35, 0.82);
+    border: 1px solid rgba(99, 102, 241, 0.18);
     box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.45),
-      0 1px 2px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 8px 32px rgba(0, 0, 0, 0.55),
+      0 2px 6px rgba(0, 0, 0, 0.35),
+      0 1px 2px rgba(0, 0, 0, 0.25),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.07),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
   }
 
   .island:hover {
+    background: rgba(255, 255, 255, 0.80);
+    border-color: rgba(255, 255, 255, 0.70);
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.14),
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    transform: translateY(-1px);
+      0 12px 40px rgba(99, 102, 241, 0.16),
+      0 4px 12px rgba(0, 0, 0, 0.10),
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+    transform: translateY(-2px) scale(1.005);
   }
 
   .dark .island:hover {
+    background: rgba(20, 27, 48, 0.90);
+    border-color: rgba(99, 102, 241, 0.30);
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.55),
-      0 2px 4px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      0 12px 40px rgba(0, 0, 0, 0.65),
+      0 4px 12px rgba(0, 0, 0, 0.40),
+      0 1px 3px rgba(0, 0, 0, 0.30),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+    transform: translateY(-2px) scale(1.005);
+  }
+
+  .island:active {
+    transform: translateY(0) scale(0.998);
+    box-shadow:
+      0 3px 10px rgba(99, 102, 241, 0.10),
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      inset 0 2px 4px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  }
+
+  .dark .island:active {
+    box-shadow:
+      0 3px 10px rgba(0, 0, 0, 0.5),
+      inset 0 2px 4px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   /* Island mobile menu expansion */

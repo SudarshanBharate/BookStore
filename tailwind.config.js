@@ -21,6 +21,21 @@ export default {
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
+      keyframes: {
+        "ping-once": {
+          "0%":   { transform: "scale(1)",   opacity: "0.8" },
+          "100%": { transform: "scale(2.2)", opacity: "0" },
+        },
+        "ping-once-delay": {
+          "0%, 20%": { transform: "scale(1)",   opacity: "0" },
+          "40%":     { transform: "scale(1)",   opacity: "0.6" },
+          "100%":    { transform: "scale(2.6)", opacity: "0" },
+        },
+      },
+      animation: {
+        "ping-once":       "ping-once 0.6s ease-out forwards",
+        "ping-once-delay": "ping-once-delay 0.9s ease-out forwards",
+      },
     },
   },
   plugins: [],

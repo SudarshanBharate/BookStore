@@ -119,13 +119,13 @@ export default function HomePage() {
       <section className="bg-primary-600 px-4 py-14 text-center text-white dark:bg-primary-800">
         <h2 className="text-3xl font-bold">Ready to start reading?</h2>
         <p className="mx-auto mt-3 max-w-md text-primary-100">
-          Join over 120,000 readers. Free shipping on orders over $25.
+          Join over 120,000 readers. Free shipping on orders over ₹999.
         </p>
         <Button
           as={Link}
           to="/catalogue"
           size="lg"
-          className="mt-6 !bg-white !text-primary-700 hover:!bg-primary-50"
+          className="mt-6 !bg-white !text-primary-800 !font-bold hover:!bg-primary-50 !shadow-lg"
         >
           Shop Now
         </Button>
