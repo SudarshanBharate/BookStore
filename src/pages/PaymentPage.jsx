@@ -58,7 +58,7 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl px-4 pt-20 pb-10 sm:px-6 lg:px-8">
       <StepIndicator current={1} />
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">

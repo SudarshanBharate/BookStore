@@ -42,7 +42,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-950">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 pt-20 pb-12 dark:bg-gray-950">
       <div className="w-full max-w-sm">
         {/* Header */}
         <div className="mb-8 text-center">

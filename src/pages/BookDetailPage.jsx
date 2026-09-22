@@ -37,7 +37,7 @@ export default function BookDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 pt-20 pb-10 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
       <nav className="mb-6 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
         <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400">Home</Link>

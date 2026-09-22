@@ -105,7 +105,7 @@ export default function BookCard({ book, view = "grid" }) {
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-4 bg-gray-50/80 dark:bg-gray-800/60 border-t border-gray-100 dark:border-gray-700/50">
         <span className="badge bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 self-start">
           {book.category}
         </span>

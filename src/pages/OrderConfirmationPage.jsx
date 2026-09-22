@@ -10,7 +10,7 @@ const ESTIMATED_DATE = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDa
 
 export default function OrderConfirmationPage() {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-2xl px-4 pt-24 pb-16 text-center sm:px-6 lg:px-8">
       {/* Success icon */}
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
         <svg

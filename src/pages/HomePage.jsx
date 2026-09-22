@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900 px-4 py-20 text-white sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900 px-4 pt-28 pb-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary-200">
             Your Next Great Read Awaits
