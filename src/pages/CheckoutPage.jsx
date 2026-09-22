@@ -64,7 +64,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 pt-20 pb-10 sm:px-6 lg:px-8">
-      <StepIndicator current={1} />
+      <StepIndicator current={0} />
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         {/* Address section */}

@@ -105,10 +105,21 @@ export default function BookDetailPage() {
             )}
           </div>
 
-          {/* Stock */}
+          {/* Stock + Tentative Delivery */}
           <p className={`mt-2 text-sm font-medium ${book.inStock ? "text-green-600 dark:text-green-400" : "text-red-500"}`}>
             {book.inStock ? "✓ In stock — ready to ship" : "✗ Out of stock"}
           </p>
+          {book.inStock && (
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              🚚 Estimated delivery by{" "}
+              <span className="font-semibold text-gray-700 dark:text-gray-200">
+                {new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN", {
+                  weekday: "short", day: "numeric", month: "short",
+                })}
+              </span>
+              {" "}(order today)
+            </p>
+          )}
 
           {/* Description */}
           <p className="mt-5 leading-relaxed text-gray-600 dark:text-gray-300">

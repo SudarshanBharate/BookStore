@@ -89,7 +89,7 @@ export function useTheme() {
   return ctx;
 }
 
-/* ── Auth Context ───────────────────────────────────────────────────── */
+/* ── Auth Context (with Order History) ─────────────────────────────── */
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -101,6 +101,19 @@ export function AuthProvider({ children }) {
     }
   });
 
+  // Orders: [{ id, number, date, items, subtotal, shipping, tax, total, status, cancelledAt }]
+  const [orders, setOrders] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("orders") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("orders", JSON.stringify(orders));
+  }, [orders]);
+
   const login = useCallback((userData) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
@@ -111,8 +124,26 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("user");
   }, []);
 
+  /** Call this when payment succeeds to persist the order. */
+  const addOrder = useCallback((orderData) => {
+    setOrders((prev) => [orderData, ...prev]);
+  }, []);
+
+  /** Cancel an order if within 48 hours of placement. */
+  const cancelOrder = useCallback((orderId) => {
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId
+          ? { ...o, status: "Cancelled", cancelledAt: Date.now() }
+          : o
+      )
+    );
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, isAuthenticated: !!user, orders, addOrder, cancelOrder }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,11 +1,12 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { CartProvider, ThemeProvider, AuthProvider, useAuth } from "./context/AppContext";
+import { CartProvider, ThemeProvider, AuthProvider, useAuth, useCart } from "./context/AppContext";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import CataloguePage from "./pages/CataloguePage";
 import BookDetailPage from "./pages/BookDetailPage";
@@ -13,11 +14,18 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import PaymentPage from "./pages/PaymentPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
+import ProfilePage from "./pages/ProfilePage";
 
 /** Guard: redirect unauthenticated users to /login */
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? children : <Navigate to="/login" replace />;
+}
+
+/** Guard: redirect to /cart if cart is empty */
+function CartRequiredRoute({ children }) {
+  const { items } = useCart();
+  return items.length > 0 ? children : <Navigate to="/cart" replace />;
 }
 
 function AppShell() {
@@ -28,17 +36,20 @@ function AppShell() {
         <Routes>
           {/* Public */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/catalogue" element={<CataloguePage />} />
           <Route path="/books/:id" element={<BookDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
 
-          {/* Protected */}
+          {/* Auth + cart required */}
           <Route
             path="/checkout"
             element={
               <ProtectedRoute>
-                <CheckoutPage />
+                <CartRequiredRoute>
+                  <CheckoutPage />
+                </CartRequiredRoute>
               </ProtectedRoute>
             }
           />
@@ -46,7 +57,9 @@ function AppShell() {
             path="/payment"
             element={
               <ProtectedRoute>
-                <PaymentPage />
+                <CartRequiredRoute>
+                  <PaymentPage />
+                </CartRequiredRoute>
               </ProtectedRoute>
             }
           />
@@ -55,6 +68,16 @@ function AppShell() {
             element={
               <ProtectedRoute>
                 <OrderConfirmationPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Profile / Order history */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />

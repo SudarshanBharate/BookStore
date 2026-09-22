@@ -161,9 +161,9 @@ export default function Navbar() {
         {/* Auth */}
         {user ? (
           <div className="hidden sm:flex items-center gap-1.5 z-10">
-            <span className="text-[11px] font-semibold text-primary-600 dark:text-primary-400 max-w-[72px] truncate">
+            <Link to="/profile" className="text-[11px] font-semibold text-primary-600 dark:text-primary-400 max-w-[80px] truncate hover:underline">
               {user.name.split(" ")[0]}
-            </span>
+            </Link>
             <button onClick={handleLogout} className="nav-pill nav-pill-idle text-[11px] !px-2.5 !py-0.5">
               Sign Out
             </button>
@@ -216,20 +216,38 @@ export default function Navbar() {
               </NavLink>
             ))}
             {user ? (
-              <button
-                onClick={handleLogout}
-                className="rounded-xl px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
-              >
-                Sign Out ({user.name})
-              </button>
+              <>
+                <Link
+                  to="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-xl px-3 py-2 text-sm font-medium text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20 transition-colors"
+                >
+                  My Orders
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-xl px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+                >
+                  Sign Out ({user.name})
+                </button>
+              </>
             ) : (
-              <Link
-                to="/login"
-                onClick={() => setMenuOpen(false)}
-                className="rounded-xl px-3 py-2 text-sm font-medium text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20 transition-colors"
-              >
-                Sign In
-              </Link>
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-xl px-3 py-2 text-sm font-medium text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20 transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-xl px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
+                >
+                  Create Account
+                </Link>
+              </>
             )}
           </nav>
         </div>

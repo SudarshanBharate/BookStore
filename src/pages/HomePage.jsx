@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { BOOKS } from "../data/books";
+import { useAuth } from "../context/AppContext";
 import BookCard from "../components/BookCard";
 import Button from "../components/Button";
 
@@ -18,6 +19,15 @@ const GENRES = [
 ];
 
 export default function HomePage() {
+  const { orders } = useAuth();
+
+  // Build recommendations from past order categories (deduplicated, not already ordered)
+  const orderedBookIds = new Set(orders.flatMap((o) => o.items.map((i) => i.id)));
+  const orderedCategories = [...new Set(orders.flatMap((o) => o.items.map((i) => i.category)))];
+  const recommendations = orderedCategories.length > 0
+    ? BOOKS.filter((b) => orderedCategories.includes(b.category) && !orderedBookIds.has(b.id)).slice(0, 4)
+    : [];
+
   return (
     <main>
       {/* Hero */}
@@ -114,6 +124,24 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Order-based Recommendations — only shown when user has order history */}
+      {recommendations.length > 0 && (
+        <section className="bg-gray-50 py-14 dark:bg-gray-900">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHeader
+              title="Recommended for You"
+              subtitle="Based on your past orders"
+              href="/catalogue"
+            />
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {recommendations.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Banner */}
       <section className="bg-primary-600 px-4 py-14 text-center text-white dark:bg-primary-800">

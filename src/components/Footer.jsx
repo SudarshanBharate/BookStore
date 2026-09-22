@@ -14,7 +14,8 @@ const FOOTER_LINKS = [
     heading: "Account",
     links: [
       { to: "/login", label: "Sign In" },
-      { to: "/checkout", label: "Checkout" },
+      { to: "/register", label: "Register" },
+      { to: "/profile", label: "My Orders" },
     ],
   },
   {
