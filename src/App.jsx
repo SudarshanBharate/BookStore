@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { CartProvider, ThemeProvider, AuthProvider, useAuth, useCart } from "./context/AppContext";
 
 import Navbar from "./components/Navbar";
@@ -16,6 +16,15 @@ import PaymentPage from "./pages/PaymentPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import ProfilePage from "./pages/ProfilePage";
 
+/** Scroll to top on every route change */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
+
 /** Guard: redirect unauthenticated users to /login */
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -31,6 +40,7 @@ function CartRequiredRoute({ children }) {
 function AppShell() {
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-gray-950">
+      <ScrollToTop />
       <Navbar />
       <div className="flex-1">
         <Routes>
