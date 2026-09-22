@@ -165,8 +165,4 @@ Access it in code via `import.meta.env.VITE_API_BASE_URL`.
 2. Commit your changes: `git commit -m "feat: describe your change"`
 3. Push and open a Pull Request against `main`
 
----
 
-## License
-
-MIT
