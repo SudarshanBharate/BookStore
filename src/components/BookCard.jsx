@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/AppContext";
+import { formatINR } from "../utils/format";
 import Button from "./Button";
 
 /**
- * BookCard — displays a single book in the catalogue / homepage grid.
+ * BookCard — glass-morphism card with cursor-tracked glow.
  *
  * Props:
  *   book  — book object from data/books.js
@@ -12,20 +13,44 @@ import Button from "./Button";
  */
 export default function BookCard({ book, view = "grid" }) {
   const { addToCart } = useCart();
+  const cardRef = useRef(null);
 
   const discount =
     book.originalPrice > book.price
       ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100)
       : null;
 
+  /* Cursor glow tracking */
+  const handleMouseMove = useCallback((e) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${((e.clientX - rect.left) / rect.width) * 100}%`);
+    el.style.setProperty("--my", `${((e.clientY - rect.top) / rect.height) * 100}%`);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const el = cardRef.current;
+    if (el) {
+      el.style.setProperty("--mx", "50%");
+      el.style.setProperty("--my", "50%");
+    }
+  }, []);
+
   if (view === "list") {
     return (
-      <div className="card flex gap-4 p-4">
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="card-glass book-glow relative flex gap-4 p-4"
+        style={{ "--mx": "50%", "--my": "50%" }}
+      >
         <Link to={`/books/${book.id}`} className="shrink-0">
           <img
             src={book.cover}
             alt={book.title}
-            className="h-32 w-24 rounded-lg object-cover shadow-sm"
+            className="h-32 w-24 rounded-xl object-cover shadow-sm transition duration-300 hover:scale-105"
             loading="lazy"
           />
         </Link>
@@ -54,22 +79,28 @@ export default function BookCard({ book, view = "grid" }) {
   }
 
   return (
-    <div className="card group flex flex-col overflow-hidden transition hover:shadow-md">
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="card-glass book-glow group relative flex flex-col overflow-hidden"
+      style={{ "--mx": "50%", "--my": "50%" }}
+    >
       <Link to={`/books/${book.id}`} className="relative overflow-hidden">
         <img
           src={book.cover}
           alt={book.title}
-          className="h-52 w-full object-cover transition duration-300 group-hover:scale-105"
+          className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
           loading="lazy"
         />
         {discount && (
-          <span className="absolute left-2 top-2 badge bg-red-500 text-white">
+          <span className="absolute left-2 top-2 badge bg-red-500 text-white shadow-sm">
             -{discount}%
           </span>
         )}
         {!book.inStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <span className="badge bg-gray-800 text-gray-200">Out of Stock</span>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
+            <span className="badge bg-gray-900/80 text-gray-200 text-sm px-3 py-1">Out of Stock</span>
           </div>
         )}
       </Link>
@@ -118,11 +149,11 @@ function PriceBlock({ book, discount }) {
   return (
     <div>
       <span className="text-base font-bold text-gray-900 dark:text-white">
-        ${book.price.toFixed(2)}
+        {formatINR(book.price)}
       </span>
       {discount && (
         <span className="ml-1.5 text-xs text-gray-400 line-through dark:text-gray-500">
-          ${book.originalPrice.toFixed(2)}
+          {formatINR(book.originalPrice)}
         </span>
       )}
     </div>

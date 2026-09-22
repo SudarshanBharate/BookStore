@@ -47,7 +47,7 @@ export default function LoginPage() {
         {/* Header */}
         <div className="mb-8 text-center">
           <Link to="/" className="text-3xl font-bold text-primary-600 dark:text-primary-400">
-            📚 BookStore
+            📚 Sudarshan BookStore
           </Link>
           <h1 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">
             Welcome back

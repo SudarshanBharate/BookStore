@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/AppContext";
+import { formatINR } from "../utils/format";
 
 /**
  * CartItem — a single line-item in the shopping cart.
@@ -69,7 +70,7 @@ export default function CartItem({ item }) {
 
           {/* Line total */}
           <span className="text-base font-bold text-gray-900 dark:text-white">
-            ${(item.price * item.quantity).toFixed(2)}
+            {formatINR(item.price * item.quantity)}
           </span>
         </div>
       </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { BOOKS } from "../data/books";
 import { useCart } from "../context/AppContext";
+import { formatINR } from "../utils/format";
 import BookCard from "../components/BookCard";
 import Button from "../components/Button";
 
@@ -90,16 +91,16 @@ export default function BookDetailPage() {
           {/* Price */}
           <div className="mt-5 flex items-baseline gap-3">
             <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
-              ${book.price.toFixed(2)}
+              {formatINR(book.price)}
             </span>
             {discount && (
               <span className="text-lg text-gray-400 line-through dark:text-gray-500">
-                ${book.originalPrice.toFixed(2)}
+                {formatINR(book.originalPrice)}
               </span>
             )}
             {discount && (
               <span className="badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
-                Save ${(book.originalPrice - book.price).toFixed(2)}
+                Save {formatINR(book.originalPrice - book.price)}
               </span>
             )}
           </div>

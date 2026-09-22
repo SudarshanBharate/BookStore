@@ -24,7 +24,7 @@ function AppShell() {
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-gray-950">
       <Navbar />
-      <div className="flex-1">
+      <div className="flex-1 pt-16">
         <Routes>
           {/* Public */}
           <Route path="/login" element={<LoginPage />} />

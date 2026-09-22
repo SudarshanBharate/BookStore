@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/AppContext";
+import { formatINR } from "../utils/format";
 import { StepIndicator } from "./CheckoutPage";
 import Button from "../components/Button";
 
@@ -18,8 +19,8 @@ export default function PaymentPage() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const shipping = totalPrice > 25 ? 0 : 4.99;
-  const tax = totalPrice * 0.08;
+  const shipping = totalPrice > 999 ? 0 : 99;
+  const tax = totalPrice * 0.18;
   const orderTotal = totalPrice + shipping + tax;
 
   function handleChange(e) {
@@ -98,7 +99,7 @@ export default function PaymentPage() {
               </div>
 
               <Button type="submit" loading={loading} size="lg" fullWidth>
-                {loading ? "Processing payment…" : `Pay $${orderTotal.toFixed(2)}`}
+                {loading ? "Processing payment…" : `Pay ${formatINR(orderTotal)}`}
               </Button>
             </form>
           )}
@@ -114,7 +115,7 @@ export default function PaymentPage() {
                 <strong>{PAYMENT_METHODS.find((m) => m.id === method)?.label}</strong>.
               </p>
               <Button size="lg" onClick={handlePay} loading={loading}>
-                {loading ? "Redirecting…" : `Continue — $${orderTotal.toFixed(2)}`}
+                {loading ? "Redirecting…" : `Continue — ${formatINR(orderTotal)}`}
               </Button>
             </div>
           )}
@@ -124,11 +125,11 @@ export default function PaymentPage() {
         <div className="card p-5 h-fit sticky top-24">
           <h3 className="mb-3 font-bold text-gray-900 dark:text-white">Order Total</h3>
           <div className="space-y-2 text-sm">
-            <SumRow label="Subtotal" value={`$${totalPrice.toFixed(2)}`} />
-            <SumRow label="Shipping" value={shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`} />
-            <SumRow label="Tax (8%)" value={`$${tax.toFixed(2)}`} />
+            <SumRow label="Subtotal" value={formatINR(totalPrice)} />
+            <SumRow label="Shipping" value={shipping === 0 ? "Free" : formatINR(shipping)} />
+            <SumRow label="GST (18%)" value={formatINR(tax)} />
             <div className="border-t border-gray-200 pt-2 dark:border-gray-700" />
-            <SumRow label="Total" value={`$${orderTotal.toFixed(2)}`} bold />
+            <SumRow label="Total" value={formatINR(orderTotal)} bold />
           </div>
         </div>
       </div>

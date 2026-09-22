@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/AppContext";
+import { formatINR } from "../utils/format";
 import CartItem from "../components/CartItem";
 import Button from "../components/Button";
 
@@ -8,8 +9,8 @@ export default function CartPage() {
   const { items, totalItems, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
 
-  const shipping = totalPrice > 25 || totalPrice === 0 ? 0 : 4.99;
-  const tax = totalPrice * 0.08;
+  const shipping = totalPrice > 999 || totalPrice === 0 ? 0 : 99;
+  const tax = totalPrice * 0.18;
   const orderTotal = totalPrice + shipping + tax;
 
   if (items.length === 0) {
@@ -60,25 +61,25 @@ export default function CartPage() {
             </h2>
 
             <div className="space-y-2 text-sm">
-              <Row label="Subtotal" value={`$${totalPrice.toFixed(2)}`} />
+              <Row label="Subtotal" value={formatINR(totalPrice)} />
               <Row
                 label="Shipping"
-                value={shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+                value={shipping === 0 ? "Free" : formatINR(shipping)}
                 valueClass={shipping === 0 ? "text-green-600 dark:text-green-400 font-semibold" : ""}
               />
-              <Row label="Tax (8%)" value={`$${tax.toFixed(2)}`} />
+              <Row label="GST (18%)" value={formatINR(tax)} />
             </div>
 
-            {totalPrice < 25 && totalPrice > 0 && (
+            {totalPrice < 999 && totalPrice > 0 && (
               <p className="mt-3 rounded-lg bg-yellow-50 px-3 py-2 text-xs text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400">
-                Add ${(25 - totalPrice).toFixed(2)} more for free shipping!
+                Add {formatINR(999 - totalPrice)} more for free shipping!
               </p>
             )}
 
             <div className="my-4 border-t border-gray-200 dark:border-gray-700" />
             <Row
               label="Total"
-              value={`$${orderTotal.toFixed(2)}`}
+              value={formatINR(totalPrice + shipping + tax)}
               labelClass="text-base font-bold text-gray-900 dark:text-white"
               valueClass="text-base font-bold text-gray-900 dark:text-white"
             />

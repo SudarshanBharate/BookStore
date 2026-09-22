@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/AppContext";
+import { formatINR } from "../utils/format";
 import Button from "../components/Button";
 
 const SAVED_ADDRESSES = [
@@ -36,7 +37,7 @@ export default function CheckoutPage() {
   });
   const [errors, setErrors] = useState({});
 
-  const shipping = totalPrice > 25 ? 0 : 4.99;
+  const shipping = totalPrice > 999 ? 0 : 99;
 
   function handleNewChange(e) {
     setNewAddress((a) => ({ ...a, [e.target.name]: e.target.value }));
@@ -154,7 +155,7 @@ function OrderSummary({ items, totalPrice, shipping }) {
         {items.map((i) => (
           <li key={i.id} className="flex justify-between gap-2 text-gray-600 dark:text-gray-300">
             <span className="line-clamp-1">{i.title} × {i.quantity}</span>
-            <span className="shrink-0">${(i.price * i.quantity).toFixed(2)}</span>
+            <span className="shrink-0">{formatINR(i.price * i.quantity)}</span>
           </li>
         ))}
       </ul>
@@ -162,12 +163,12 @@ function OrderSummary({ items, totalPrice, shipping }) {
       <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
         <span>Shipping</span>
         <span className={shipping === 0 ? "text-green-600 dark:text-green-400 font-semibold" : ""}>
-          {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+          {shipping === 0 ? "Free" : formatINR(shipping)}
         </span>
       </div>
       <div className="mt-2 flex justify-between font-bold text-gray-900 dark:text-white">
         <span>Total</span>
-        <span>${(totalPrice + shipping).toFixed(2)}</span>
+        <span>{formatINR(totalPrice + shipping)}</span>
       </div>
     </div>
   );

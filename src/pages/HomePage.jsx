@@ -32,7 +32,8 @@ export default function HomePage() {
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg text-primary-100">
             Browse thousands of titles across every genre. Fast delivery,
-            unbeatable prices, and hand-picked recommendations.
+            unbeatable prices, and hand-picked recommendations — from{" "}
+            <span className="font-semibold text-white">Sudarshan BookStore</span>.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button
@@ -54,15 +55,8 @@ export default function HomePage() {
             </Button>
           </div>
         </div>
-        {/* Decorative circles */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/5"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-white/5"
-        />
+        <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/5" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-white/5" />
       </section>
 
       {/* Stats bar */}
