@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AppContext";
+import { useAuth, useCart } from "../context/AppContext";
 import Button from "../components/Button";
 
 export default function RegisterPage() {
   const { login } = useAuth();
+  const { switchCart } = useCart();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
   const [errors, setErrors] = useState({});
@@ -38,7 +39,7 @@ export default function RegisterPage() {
     setLoading(true);
     // Simulate async registration — replace with real API call
     setTimeout(() => {
-      login({ name: form.name.trim(), email: form.email.trim() });
+      login({ name: form.name.trim(), email: form.email.trim() }, { switchCart });
       setLoading(false);
       navigate("/");
     }, 900);

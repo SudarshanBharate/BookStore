@@ -8,11 +8,11 @@ const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
 
 export default function ProfilePage() {
   const { user, logout, orders, cancelOrder } = useAuth();
-  const { addToCart } = useCart();
+  const { addToCart, switchCart } = useCart();
   const navigate = useNavigate();
 
   function handleLogout() {
-    logout();
+    logout({ switchCart });
     navigate("/login");
   }
 

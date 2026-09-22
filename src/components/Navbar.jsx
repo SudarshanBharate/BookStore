@@ -10,7 +10,7 @@ import { useCart, useTheme, useAuth } from "../context/AppContext";
  * and a glowing indigo underline so the user always knows their location.
  */
 export default function Navbar() {
-  const { totalItems } = useCart();
+  const { totalItems, switchCart } = useCart();
   const { dark, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function Navbar() {
   }
 
   function handleLogout() {
-    logout(); navigate("/login"); setMenuOpen(false);
+    logout({ switchCart }); navigate("/login"); setMenuOpen(false);
   }
 
   return (
@@ -78,7 +78,7 @@ export default function Navbar() {
         >
           <BookIcon />
           <span className="hidden sm:inline text-[13px] font-bold tracking-tight bg-gradient-to-r from-primary-600 to-violet-500 bg-clip-text text-transparent dark:from-primary-400 dark:to-violet-400">
-            Sudarshan BookStore
+            Sudarshan Bookstore
           </span>
         </Link>
 

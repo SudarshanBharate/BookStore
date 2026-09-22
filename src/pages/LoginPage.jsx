@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AppContext";
+import { useAuth, useCart } from "../context/AppContext";
 import Button from "../components/Button";
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const { switchCart } = useCart();
   const navigate = useNavigate();
   // Pre-fill demo credentials so testers can sign in instantly.
   // Newly registered users will come here with empty fields (no stored defaults).
@@ -37,7 +38,10 @@ export default function LoginPage() {
     setLoading(true);
     // Simulate async auth — replace with real API call
     setTimeout(() => {
-      login({ name: "Alex Reader", email: form.email });
+      // Derive a display name from the email prefix for demo accounts
+      const name = form.email.split("@")[0].replace(/[._-]/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+      login({ name, email: form.email }, { switchCart });
       setLoading(false);
       navigate("/");
     }, 800);

@@ -1,29 +1,51 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
+/* ── helpers ────────────────────────────────────────────────────────── */
+function ordersKey(email) {
+  return `orders:${email}`;
+}
+function cartKey(email) {
+  return email ? `cart:${email}` : "cart:guest";
+}
+function readJSON(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; }
+  catch { return fallback; }
+}
+
 /* ── Cart Context ───────────────────────────────────────────────────── */
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(() => {
+  // Cart is keyed per-user; we get the current user email from localStorage
+  // so CartProvider doesn't need to depend on AuthProvider directly.
+  function currentCartKey() {
     try {
-      return JSON.parse(localStorage.getItem("cart") || "[]");
-    } catch {
-      return [];
-    }
-  });
+      const u = JSON.parse(localStorage.getItem("user") || "null");
+      return cartKey(u?.email);
+    } catch { return cartKey(null); }
+  }
 
+  const [items, setItems] = useState(() => readJSON(currentCartKey(), []));
+  // Track which key we're currently writing to so we can switch on login/logout
+  const [activeCartKey, setActiveCartKey] = useState(currentCartKey);
+
+  // Persist whenever items or the active key change
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items));
-  }, [items]);
+    localStorage.setItem(activeCartKey, JSON.stringify(items));
+  }, [items, activeCartKey]);
+
+  // Called by AuthContext when the user changes (login / logout)
+  const switchCart = useCallback((email) => {
+    const key = cartKey(email);
+    setActiveCartKey(key);
+    setItems(readJSON(key, []));
+  }, []);
 
   const addToCart = useCallback((book, qty = 1) => {
     setItems((prev) => {
       const existing = prev.find((i) => i.id === book.id);
-      if (existing) {
-        return prev.map((i) =>
-          i.id === book.id ? { ...i, quantity: i.quantity + qty } : i
-        );
-      }
+      if (existing)
+        return prev.map((i) => i.id === book.id ? { ...i, quantity: i.quantity + qty } : i);
       return [...prev, { ...book, quantity: qty }];
     });
   }, []);
@@ -34,9 +56,7 @@ export function CartProvider({ children }) {
 
   const updateQuantity = useCallback((bookId, qty) => {
     if (qty < 1) return;
-    setItems((prev) =>
-      prev.map((i) => (i.id === bookId ? { ...i, quantity: qty } : i))
-    );
+    setItems((prev) => prev.map((i) => (i.id === bookId ? { ...i, quantity: qty } : i)));
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
@@ -46,7 +66,8 @@ export function CartProvider({ children }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice }}
+      value={{ items, addToCart, removeFromCart, updateQuantity, clearCart,
+               totalItems, totalPrice, switchCart }}
     >
       {children}
     </CartContext.Provider>
@@ -89,53 +110,51 @@ export function useTheme() {
   return ctx;
 }
 
-/* ── Auth Context (with Order History) ─────────────────────────────── */
+/* ── Auth Context ───────────────────────────────────────────────────── */
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("user") || "null");
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState(() => readJSON("user", null));
 
-  // Orders: [{ id, number, date, items, subtotal, shipping, tax, total, status, cancelledAt }]
+  // Orders are per-user: stored under "orders:<email>"
   const [orders, setOrders] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("orders") || "[]");
-    } catch {
-      return [];
-    }
+    const u = readJSON("user", null);
+    return u ? readJSON(ordersKey(u.email), []) : [];
   });
 
+  // Persist orders under the current user's key whenever they change
   useEffect(() => {
-    localStorage.setItem("orders", JSON.stringify(orders));
-  }, [orders]);
+    if (user) localStorage.setItem(ordersKey(user.email), JSON.stringify(orders));
+  }, [orders, user]);
 
-  const login = useCallback((userData) => {
+  const login = useCallback((userData, { switchCart } = {}) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
+    // Load this user's orders from their own key
+    setOrders(readJSON(ordersKey(userData.email), []));
+    // Switch the cart to this user's cart
+    switchCart?.(userData.email);
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(({ switchCart } = {}) => {
     setUser(null);
     localStorage.removeItem("user");
+    // Clear orders from state — leave storage intact for next login
+    setOrders([]);
+    // Switch cart to guest (empty)
+    switchCart?.(null);
   }, []);
 
-  /** Call this when payment succeeds to persist the order. */
+  /** Persist a completed order under the logged-in user's key. */
   const addOrder = useCallback((orderData) => {
     setOrders((prev) => [orderData, ...prev]);
   }, []);
 
-  /** Cancel an order if within 48 hours of placement. */
+  /** Cancel an order within 48 h of placement. */
   const cancelOrder = useCallback((orderId) => {
     setOrders((prev) =>
       prev.map((o) =>
-        o.id === orderId
-          ? { ...o, status: "Cancelled", cancelledAt: Date.now() }
-          : o
+        o.id === orderId ? { ...o, status: "Cancelled", cancelledAt: Date.now() } : o
       )
     );
   }, []);
