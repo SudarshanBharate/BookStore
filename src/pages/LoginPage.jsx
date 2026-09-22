@@ -6,7 +6,9 @@ import Button from "../components/Button";
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
+  // Pre-fill demo credentials so testers can sign in instantly.
+  // Newly registered users will come here with empty fields (no stored defaults).
+  const [form, setForm] = useState({ email: "demo@bookstore.com", password: "Demo1234" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -110,7 +112,7 @@ export default function LoginPage() {
 
           {/* Demo hint */}
           <p className="mt-4 text-center text-xs text-gray-400 dark:text-gray-500">
-            Demo: any valid email &amp; 8+ char password
+            Demo credentials are pre-filled — just click <strong>Sign In</strong>
           </p>
         </div>
 

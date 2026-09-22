@@ -64,11 +64,10 @@ export default function Navbar() {
         } w-[min(94vw,720px)]`}
         style={{ "--mx": "50%", "--my": "50%" }}
       >
-        {/* Cursor glow overlay */}
+        {/* Cursor-tracked shimmer — brightens toward the cursor like btn-magnetic */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-300"
-          style={{ background: "radial-gradient(circle at var(--mx) var(--my), rgba(99,102,241,0.15) 0%, transparent 65%)" }}
+          className="island-cursor-shimmer pointer-events-none absolute inset-0 rounded-[inherit]"
         />
 
         {/* Logo */}
@@ -135,10 +134,11 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              aria-label="Open search"
-              className="island-icon-btn"
+              aria-label="Search books"
+              className="island-search-pill"
             >
               <SearchIcon />
+              <span>Search</span>
             </button>
           )}
         </form>
@@ -189,15 +189,15 @@ export default function Navbar() {
         <div className="island pointer-events-auto mt-2 w-[min(94vw,720px)] rounded-3xl px-4 py-4 space-y-3">
           <form onSubmit={handleSearch}>
             <div className="relative">
-              <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
-                <SearchIcon />
+              <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center gap-1 text-gray-400">
+                <SearchIcon /><span className="text-xs font-medium">Search</span>
               </span>
               <input
                 type="search"
-                placeholder="Search books…"
+                placeholder="Type to search books…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="input pl-9 text-sm"
+                className="input pl-20 text-sm"
               />
             </div>
           </form>

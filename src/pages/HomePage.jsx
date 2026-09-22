@@ -50,7 +50,7 @@ export default function HomePage() {
               as={Link}
               to="/catalogue"
               size="lg"
-              className="!bg-white !text-primary-700 hover:!bg-primary-50"
+              className="!bg-primary-500 !text-white hover:!bg-primary-400 !border-white/30"
             >
               Browse Catalogue
             </Button>
