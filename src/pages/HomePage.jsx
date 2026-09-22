@@ -89,7 +89,7 @@ export default function HomePage() {
       {/* Featured books */}
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <SectionHeader title="Featured Books" subtitle="Handpicked favourites our readers love" href="/catalogue" />
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {FEATURED.map((book) => (
             <BookCard key={book.id} book={book} />
           ))}
@@ -118,7 +118,7 @@ export default function HomePage() {
       {/* New Arrivals */}
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <SectionHeader title="New Arrivals" subtitle="Fresh titles added this week" href="/catalogue" />
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {NEW_ARRIVALS.map((book) => (
             <BookCard key={book.id} book={book} />
           ))}
@@ -134,7 +134,7 @@ export default function HomePage() {
               subtitle="Based on your past orders"
               href="/catalogue"
             />
-            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
               {recommendations.map((book) => (
                 <BookCard key={book.id} book={book} />
               ))}
@@ -153,7 +153,7 @@ export default function HomePage() {
           as={Link}
           to="/catalogue"
           size="lg"
-          className="mt-6 !bg-white !text-primary-800 !font-bold hover:!bg-primary-50 !shadow-lg"
+          className="mt-6 !font-bold !shadow-lg"
         >
           Shop Now
         </Button>

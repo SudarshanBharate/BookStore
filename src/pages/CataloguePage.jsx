@@ -13,7 +13,7 @@ const SORT_OPTIONS = [
 
 export default function CataloguePage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState("list");
 
   const activeCategory = searchParams.get("category") || "All";
   const searchQuery = searchParams.get("search") || "";
@@ -65,9 +65,9 @@ export default function CataloguePage() {
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        {/* Sidebar filters */}
+        {/* Sidebar filters — sticky so categories stay visible while scrolling */}
         <aside className="w-full shrink-0 lg:w-56">
-          <div className="card p-4">
+          <div className="card p-4 lg:sticky lg:top-24">
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
               Categories
             </h2>

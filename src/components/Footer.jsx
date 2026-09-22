@@ -76,7 +76,7 @@ export default function Footer() {
             &copy; {year} BookStore. All rights reserved.
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500">
-            Built with React &amp; Tailwind CSS
+            Sudarshan BookStore for your service
           </p>
         </div>
       </div>
