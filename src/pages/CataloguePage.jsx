@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { BOOKS, CATEGORIES } from "../data/books";
 import BookCard from "../components/BookCard";
@@ -14,6 +14,8 @@ const SORT_OPTIONS = [
 export default function CataloguePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [view, setView] = useState("list");
+  // Mobile: categories dropdown open/closed
+  const [catOpen, setCatOpen] = useState(false);
 
   const activeCategory = searchParams.get("category") || "All";
   const searchQuery = searchParams.get("search") || "";
@@ -28,6 +30,11 @@ export default function CataloguePage() {
     });
   }
 
+  function selectCategory(cat) {
+    setParam("category", cat);
+    setCatOpen(false); // close dropdown after selection on mobile
+  }
+
   const filtered = useMemo(() => {
     let books = [...BOOKS];
     if (activeCategory !== "All")
@@ -39,23 +46,18 @@ export default function CataloguePage() {
           b.author.toLowerCase().includes(searchQuery.toLowerCase())
       );
     switch (sortBy) {
-      case "price-asc":
-        return books.sort((a, b) => a.price - b.price);
-      case "price-desc":
-        return books.sort((a, b) => b.price - a.price);
-      case "rating":
-        return books.sort((a, b) => b.rating - a.rating);
-      case "title":
-        return books.sort((a, b) => a.title.localeCompare(b.title));
-      default:
-        return books;
+      case "price-asc":  return books.sort((a, b) => a.price - b.price);
+      case "price-desc": return books.sort((a, b) => b.price - a.price);
+      case "rating":     return books.sort((a, b) => b.rating - a.rating);
+      case "title":      return books.sort((a, b) => a.title.localeCompare(b.title));
+      default:           return books;
     }
   }, [activeCategory, searchQuery, sortBy]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 pt-20 pb-10 sm:px-6 lg:px-8">
       {/* Page header */}
-      <div className="mb-8">
+      <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Catalogue</h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {filtered.length} book{filtered.length !== 1 ? "s" : ""} found
@@ -64,10 +66,53 @@ export default function CataloguePage() {
         </p>
       </div>
 
+      {/* ── Mobile category dropdown ──────────────────────────────────────
+           Visible only on screens smaller than lg. Replaces the sidebar.    */}
+      <div className="mb-4 lg:hidden">
+        <button
+          onClick={() => setCatOpen((o) => !o)}
+          className="flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:border-primary-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+          aria-expanded={catOpen}
+          aria-haspopup="listbox"
+        >
+          <span className="flex items-center gap-2">
+            <ChevronFilterIcon />
+            Category: <strong className="text-primary-600 dark:text-primary-400">{activeCategory}</strong>
+          </span>
+          <ChevronDownIcon open={catOpen} />
+        </button>
+
+        {catOpen && (
+          <div
+            role="listbox"
+            aria-label="Categories"
+            className="mt-1 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900"
+          >
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                role="option"
+                aria-selected={activeCategory === cat}
+                onClick={() => selectCategory(cat)}
+                className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-colors ${
+                  activeCategory === cat
+                    ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
+                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Main layout ────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-6 lg:flex-row">
-        {/* Sidebar filters — sticky so categories stay visible while scrolling */}
-        <aside className="w-full shrink-0 lg:w-56">
-          <div className="card p-4 lg:sticky lg:top-24">
+
+        {/* Sidebar — hidden on mobile, sticky on desktop */}
+        <aside className="hidden lg:block w-56 shrink-0">
+          <div className="card p-4 sticky top-24">
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
               Categories
             </h2>
@@ -95,18 +140,21 @@ export default function CataloguePage() {
           {/* Toolbar */}
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              {/* View toggles */}
               <button
                 onClick={() => setView("grid")}
                 aria-label="Grid view"
-                className={`rounded-lg p-1.5 transition-colors ${view === "grid" ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+                className={`rounded-lg p-1.5 transition-colors ${
+                  view === "grid" ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                }`}
               >
                 <GridIcon />
               </button>
               <button
                 onClick={() => setView("list")}
                 aria-label="List view"
-                className={`rounded-lg p-1.5 transition-colors ${view === "list" ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+                className={`rounded-lg p-1.5 transition-colors ${
+                  view === "list" ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                }`}
               >
                 <ListIcon />
               </button>
@@ -128,7 +176,7 @@ export default function CataloguePage() {
           {searchQuery && (
             <div className="mb-4 flex items-center gap-2">
               <span className="text-sm text-gray-600 dark:text-gray-300">
-                Search: <strong>"{searchQuery}"</strong>
+                Search: <strong>&ldquo;{searchQuery}&rdquo;</strong>
               </span>
               <button
                 onClick={() => setParam("search", "")}
@@ -143,12 +191,8 @@ export default function CataloguePage() {
           {filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <span className="text-5xl">📚</span>
-              <p className="mt-4 text-lg font-semibold text-gray-700 dark:text-gray-200">
-                No books found
-              </p>
-              <p className="mt-1 text-sm text-gray-500">
-                Try a different category or search term.
-              </p>
+              <p className="mt-4 text-lg font-semibold text-gray-700 dark:text-gray-200">No books found</p>
+              <p className="mt-1 text-sm text-gray-500">Try a different category or search term.</p>
             </div>
           ) : (
             <div
@@ -166,6 +210,27 @@ export default function CataloguePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/* ── Icons ───────────────────────────────────────────────────────────── */
+function ChevronFilterIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 7h18M6 12h12M9 17h6" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon({ open }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
   );
 }
 
